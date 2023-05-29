@@ -9,10 +9,16 @@ import Foundation
 
 struct Network {
   
+  
   func sendRequestUsingCombine(api: APIResourceable) {
     
   }
   
+  // TODO: Add throwing of error.
+  // Possible errors:
+  //  - http status code
+  //  - decoding error
+  //  - network connection error
   func sendRequestUsingAsyncAwait<T: Decodable>(api: APIResourceable) async -> T? {
     guard let url = api.url else { return nil }
   

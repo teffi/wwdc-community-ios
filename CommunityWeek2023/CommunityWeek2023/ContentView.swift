@@ -7,10 +7,11 @@
 
 import SwiftUI
 
+// TODO:  Add loading state view wrapper?
+
 struct ContentView: View {
   @State var isLoading = false
   @State var data: CommunityData?
-  
   
     var body: some View {
       ZStack {
@@ -23,15 +24,7 @@ struct ContentView: View {
             ForEach(data?.countries ?? [], id:\.country) { item in
               Section {
                 ForEach(data?.events.filter { $0.country == item.country } ?? []) { eventDetails in
-                  VStack(alignment: .leading, spacing: 10) {
-                    Text(eventDetails.cityLabel)
-                      .font(.headline)
-                    Text("\(eventDetails.events.count) events")
-                      .opacity(0.7)
-                      .font(.system(size: 14))
-                      .padding(0)
-                  }
-                  .padding()
+                  CountryCityItem(cityText: eventDetails.cityLabel, numOfEvents: eventDetails.events.count)
                 }
               } header: {
                 HStack {
@@ -61,14 +54,32 @@ struct ContentView: View {
   }
 }
 
-struct APIDataResource: APIResourceable {
-  var path: String = "https://wwdc.community/api/staticdata"
-  var method: HTTPMethod = .GET
-}
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
 }
+
+
+struct APIDataResource: APIResourceable {
+  var path: String = "https://wwdc.community/api/staticdata"
+  var method: HTTPMethod = .GET
+}
+
+struct CountryCityItem: View {
+  let cityText: String
+  let numOfEvents: Int
+  
+  var body: some View {
+    VStack(alignment: .leading, spacing: 10) {
+      Text(cityText)
+        .font(.headline)
+      Text("\(numOfEvents) events")
+        .opacity(0.7)
+        .font(.system(size: 14))
+        .padding(0)
+    }.padding()
+  }
+}
+
 
