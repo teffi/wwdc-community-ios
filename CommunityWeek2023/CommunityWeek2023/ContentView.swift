@@ -11,6 +11,7 @@ struct ContentView: View {
   @State var isLoading = false
   @State var data: CommunityData?
   
+  
     var body: some View {
       ZStack {
         if isLoading {
@@ -20,12 +21,27 @@ struct ContentView: View {
         } else {
           List {
             ForEach(data?.countries ?? [], id:\.country) { item in
-              HStack {
-                Text(item.flag)
-                Text(item.country)
+              Section {
+                ForEach(data?.events.filter { $0.country == item.country } ?? []) { eventDetails in
+                  VStack(alignment: .leading, spacing: 10) {
+                    Text(eventDetails.cityLabel)
+                      .font(.headline)
+                    Text("\(eventDetails.events.count) events")
+                      .opacity(0.7)
+                      .font(.system(size: 14))
+                      .padding(0)
+                  }
+                  .padding()
+                }
+              } header: {
+                HStack {
+                  Text(item.flag)
+                  Text(item.countryLabel)
+                }
               }
             }
           }
+          .headerProminence(.increased)
         }
       }
       .navigationTitle("Community Week")
@@ -41,7 +57,7 @@ struct ContentView: View {
     isLoading = true
     data = await network.sendRequestUsingAsyncAwait(api: resource)
     isLoading = false
-    print("Data: \(data?.countries)")
+    print("Data: \(data?.countries)\n")
   }
 }
 

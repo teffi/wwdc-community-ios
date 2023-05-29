@@ -19,7 +19,9 @@ struct Network {
     do {
       let (data, response) = try await URLSession.shared.data(from: url)
       guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else { return nil }
-      let dataModel = try JSONDecoder().decode(T.self, from: data)
+      let decoder = JSONDecoder()
+      decoder.keyDecodingStrategy = .convertFromSnakeCase
+      let dataModel = try decoder.decode(T.self, from: data)
       return dataModel
     } catch {
       return nil
