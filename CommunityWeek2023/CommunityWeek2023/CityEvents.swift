@@ -6,22 +6,43 @@
 //
 
 import SwiftUI
+import SafariServices
 
 struct CityEvents: View {
   let cityData: EventsPerCity
   
   var body: some View {
-    Text(cityData.cityLabel)
     List {
-      ForEach(cityData.events) { event in
-        VStack(alignment: .leading, spacing: 8) {
-          HStack(spacing: 4){
-            Text(event.date)
-            Text(event.description)
-          }
-          Text(event.link).font(.footnote)
+      Section {
+        ForEach(cityData.events) { event in
+          NavigationLink {
+            Text(event.link)
+          } label: {
+            VStack(alignment: .leading, spacing: 6) {
+              HStack {
+                Text(event.description)
+                  .font(.headline)
+                  .fontWeight(.bold)
+//                Spacer()
+//                Image(systemName: "rectangle.fill.on.rectangle.fill")
+              }
+              Text(event.date)
+                .font(.caption)
+                .fontWeight(.bold)
+            }
+            .padding([.top,.bottom], 10)
+            .padding([.leading,.trailing], 8)
+            
+          } // Navigation link
+
         }
+
+      } header: {
+        Text(cityData.cityLabel)
+          .font(.title)
+          .foregroundColor(.black)
       }
+      .listStyle(.plain)
     }
   }
 }
