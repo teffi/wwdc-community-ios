@@ -12,12 +12,17 @@ import SwiftUI
 struct ContentView: View {
   @State var isLoading = false
   @State var data: CommunityData?
+  @State var errorText: String?
   
     var body: some View {
       ZStack {
         if isLoading {
           VStack {
             Text("Loading data")
+          }
+        } else if let err = errorText {
+          VStack {
+            Text(err)
           }
         } else {
           List {
@@ -48,8 +53,21 @@ struct ContentView: View {
     let network = Network()
     let resource = APIDataResource()
     isLoading = true
-    data = await network.sendRequestUsingAsyncAwait(api: resource)
+    do {
+      data = try await network.sendRequestUsingAsyncAwait(api: resource)
+      errorText = nil
+      print("[Send] Load data")
+    } catch let requestError as RequestError {
+      print("[Received] Load data error: \(requestError)")
+      errorText = requestError.message
+   
+    } catch _ {
+      print("[Received] Load data error: unhandled issue")
+      errorText = "Failed to send request"
+    }
+    
     isLoading = false
+  
     print("Data: \(data?.countries)\n")
   }
 }
