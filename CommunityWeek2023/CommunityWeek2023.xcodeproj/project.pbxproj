@@ -14,6 +14,7 @@
 		6B3C6F882A20A5F700617688 /* CommunityWeek2023Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3C6F872A20A5F700617688 /* CommunityWeek2023Tests.swift */; };
 		6B3C6F922A20A5F700617688 /* CommunityWeek2023UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3C6F912A20A5F700617688 /* CommunityWeek2023UITests.swift */; };
 		6B3C6F942A20A5F700617688 /* CommunityWeek2023UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3C6F932A20A5F700617688 /* CommunityWeek2023UITestsLaunchTests.swift */; };
+		6B4413AA2A25F63D00E58DF6 /* CityEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B4413A92A25F63D00E58DF6 /* CityEvents.swift */; };
 		6B93D21A2A20B4110073F5FC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6B93D2192A20B4110073F5FC /* Launch Screen.storyboard */; };
 		6BB1C7C12A248C07006144B9 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB1C7C02A248C07006144B9 /* Network.swift */; };
 		6BB1C7C32A249AB3006144B9 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB1C7C22A249AB3006144B9 /* API.swift */; };
@@ -49,6 +50,7 @@
 		6B3C6F8D2A20A5F700617688 /* CommunityWeek2023UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CommunityWeek2023UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B3C6F912A20A5F700617688 /* CommunityWeek2023UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityWeek2023UITests.swift; sourceTree = "<group>"; };
 		6B3C6F932A20A5F700617688 /* CommunityWeek2023UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityWeek2023UITestsLaunchTests.swift; sourceTree = "<group>"; };
+		6B4413A92A25F63D00E58DF6 /* CityEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityEvents.swift; sourceTree = "<group>"; };
 		6B93D2182A20B2EC0073F5FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6B93D2192A20B4110073F5FC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		6BB1C7C02A248C07006144B9 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 				6BB1C7C02A248C07006144B9 /* Network.swift */,
 				6BB1C7C22A249AB3006144B9 /* API.swift */,
 				6BB1C7C42A249AC6006144B9 /* CommunityData.swift */,
+				6B4413A92A25F63D00E58DF6 /* CityEvents.swift */,
 			);
 			path = CommunityWeek2023;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				6B3C6F782A20A5F500617688 /* ContentView.swift in Sources */,
 				6B3C6F762A20A5F500617688 /* CommunityWeek2023App.swift in Sources */,
 				6BB1C7C32A249AB3006144B9 /* API.swift in Sources */,
+				6B4413AA2A25F63D00E58DF6 /* CityEvents.swift in Sources */,
 				6BB1C7C52A249AC6006144B9 /* CommunityData.swift in Sources */,
 				6BB1C7C12A248C07006144B9 /* Network.swift in Sources */,
 			);

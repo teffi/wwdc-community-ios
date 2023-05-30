@@ -21,14 +21,24 @@ struct Country: Codable {
   }
 }
 
-struct EventsPerCity: Codable, Identifiable {
-  let id: UUID = UUID()
+struct EventsPerCity: Codable, Identifiable, Hashable {
+  static func == (lhs: EventsPerCity, rhs: EventsPerCity) -> Bool {
+    lhs.id == rhs.id
+  }
+  
+  public func hash(into hasher: inout Hasher) {
+      return hasher.combine(id)
+  }
+  
+  let id = UUID()
   let country: String
   let events: [Event]
   let cityLabel: String
+  
 }
 
-struct Event: Codable {
+struct Event: Codable, Identifiable {
+  let id = UUID()
   let date: String
   let description: String
   let link: String

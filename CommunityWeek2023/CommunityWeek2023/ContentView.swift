@@ -29,21 +29,30 @@ struct ContentView: View {
             ForEach(data?.countries ?? [], id:\.country) { item in
               Section {
                 ForEach(data?.events.filter { $0.country == item.country } ?? []) { eventDetails in
-                  CountryCityItem(cityText: eventDetails.cityLabel, numOfEvents: eventDetails.events.count)
+                  NavigationLink(value: eventDetails) {
+                    CountryCityItem(cityText: eventDetails.cityLabel, numOfEvents: eventDetails.events.count)
+                  }
+                  
                 }
               } header: {
                 HStack {
                   Text(item.flag)
                   Text(item.countryLabel)
                 }
-              }
-            }
-          }
+              } // Section
+            } // Foreach
+          } // List
           .headerProminence(.increased)
+          .navigationDestination(for: EventsPerCity.self) { cityData in
+            CityEvents(cityData: cityData)
+          }
         }
       }
       .navigationTitle("Community Week")
+      // .task usage
+      // A more advanced usage of task() is to attach some kind of Equatable identifying value – when that value changes SwiftUI will automatically cancel the previous task and create a new task with the new value. This might be some shared app state, such as whether the user is logged in or not, or some local state, such as what kind of filter to apply to some data. .task(id: propertyName)
       .task {
+        guard data == nil else { return }
         await loadData()
       }
     }
