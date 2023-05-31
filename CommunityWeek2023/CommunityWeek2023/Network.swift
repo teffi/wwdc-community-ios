@@ -23,16 +23,6 @@ struct Network {
       .map(\.data)
       .decode(type: T.self, decoder: decoder)
       .print("request sent")
-//      .catch { error in
-//        // If catching, return type must be same with function – a Publisher type.
-//        switch error {
-//        case is DecodingError:
-//          return Fail<T, RequestError>(error: RequestError.decoding(type: error as DecodingError))
-//        default:
-//          return Fail<T, RequestError>(error: RequestError.undefined)
-//        }
-//        print("error \(error)")
-//      }
       .mapError { error in
         print("error \(error)")
         // using .mapError operation, the expected return type is Error type.
@@ -44,35 +34,21 @@ struct Network {
         default:
           return RequestError.undefined
         }
-        
       }
+//    TODO: Alternative error mapping
+//      .catch { error in
+//        // If catching, return type must be same with function – a Publisher type.
+//        switch error {
+//        case is URLError:
+//          return Fail<T, RequestError>(error: RequestError.failedToSend)
+//        case is DecodingError:
+//          return Fail<T, RequestError>(error: RequestError.decoding(type: error as! DecodingError))
+//        default:
+//          return Fail<T, RequestError>(error: RequestError.undefined)
+//        }
+//        print("error \(error)")
+//      }
       .eraseToAnyPublisher()
-    
- 
-    //return requestSessionPub
-//    return URLSession.shared.dataTaskPublisher(for: url)
-//      .flatMap { (data: Data, response: URLResponse) in
-//
-//      }
-//      .decode(type: <#T##Decodable.Protocol#>, decoder: <#T##TopLevelDecoder#>)
-    
-//      .mapError { error in
-//        return RequestError.failedToSend
-//      }
-//    return URLSession.shared.dataTaskPublisher(for: url)
-//      .flatMap { (data, response) in
-//        let decoder = JSONDecoder()
-//        decoder.keyDecodingStrategy = .convertFromSnakeCase
-//        return Just(data)
-//          .decode(type: T.self, decoder: decoder)
-//          .catch { _ in
-//            return Fail(error: RequestError.undefined)
-//          }
-//      }
-//      .catch {_ in
-//        Fail(error: RequestError.invalidResponse)
-//      }
-
   }
   
   func sendRequestUsingAsyncAwait<T: Decodable>(api: APIResourceable) async throws -> T? {

@@ -17,8 +17,10 @@ struct ContentAltView: View {
   
   var body: some View {
     VStack {
-      if viewModel.countries.isEmpty {
-        Text("No Data")
+      if viewModel.isLoading {
+        Text("Loading data")
+      } else if let errText = viewModel.errorText {
+        Text(errText)
       } else {
         List {
           ForEach(viewModel.countries, id:\.country) { item in
@@ -53,23 +55,33 @@ class ContentAltModel: ObservableObject {
   @Published var data: CommunityData = CommunityData(countries: [], events: [])
   @Published var countries: [Country] = []
   @Published var allEvents: [EventsPerCity] = []
+  @Published var errorText: String?
+  @Published var isLoading = false
+  
   
   var subscriptions = [AnyCancellable]()
   
   init() {
     let network = Network()
     let resource = APIDataResource()
+    isLoading = true
     let _ = network.sendRequestUsingCombine(api: resource, type: CommunityData.self)
       .receive(on: DispatchQueue.main)
       .sink { completion in
         switch completion {
         case .failure(let error):
           print("data error \(error)")
+          self.errorText = error.message
+          self.isLoading = false
         case .finished:
           print("finished")
+          self.isLoading = false
         }
       } receiveValue: { data in
         self.data = data
+        self.errorText = nil
+        self.isLoading = false
+        print("Receive value")
 //        print("data \(data)")
       }
       .store(in: &subscriptions)
@@ -83,6 +95,7 @@ class ContentAltModel: ObservableObject {
     $data
       .map(\.events)
       .assign(to: &$allEvents)
+    
   }
   
   func getAllEvents(country: String) -> [EventsPerCity] {
