@@ -6,18 +6,74 @@
 //
 
 import Foundation
+import Combine
 
 struct Network {
   
-  
-  func sendRequestUsingCombine(api: APIResourceable) {
+  func sendRequestUsingCombine<T: Decodable>(api: APIResourceable, type: T.Type) -> AnyPublisher<T, RequestError> {
+    // Return an instant fail event.
+    guard let url = api.url else {
+      print("error url")
+      return Fail<T, RequestError>(error: RequestError.incorrectUrl).eraseToAnyPublisher()
+    }
     
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    return URLSession.shared.dataTaskPublisher(for: url)
+      .map(\.data)
+      .decode(type: T.self, decoder: decoder)
+      .print("request sent")
+//      .catch { error in
+//        // If catching, return type must be same with function – a Publisher type.
+//        switch error {
+//        case is DecodingError:
+//          return Fail<T, RequestError>(error: RequestError.decoding(type: error as DecodingError))
+//        default:
+//          return Fail<T, RequestError>(error: RequestError.undefined)
+//        }
+//        print("error \(error)")
+//      }
+      .mapError { error in
+        print("error \(error)")
+        // using .mapError operation, the expected return type is Error type.
+        switch error {
+        case is URLError:
+          return RequestError.failedToSend
+        case is DecodingError:
+          return RequestError.decoding(type: (error as! DecodingError))
+        default:
+          return RequestError.undefined
+        }
+        
+      }
+      .eraseToAnyPublisher()
+    
+ 
+    //return requestSessionPub
+//    return URLSession.shared.dataTaskPublisher(for: url)
+//      .flatMap { (data: Data, response: URLResponse) in
+//
+//      }
+//      .decode(type: <#T##Decodable.Protocol#>, decoder: <#T##TopLevelDecoder#>)
+    
+//      .mapError { error in
+//        return RequestError.failedToSend
+//      }
+//    return URLSession.shared.dataTaskPublisher(for: url)
+//      .flatMap { (data, response) in
+//        let decoder = JSONDecoder()
+//        decoder.keyDecodingStrategy = .convertFromSnakeCase
+//        return Just(data)
+//          .decode(type: T.self, decoder: decoder)
+//          .catch { _ in
+//            return Fail(error: RequestError.undefined)
+//          }
+//      }
+//      .catch {_ in
+//        Fail(error: RequestError.invalidResponse)
+//      }
+
   }
-  
-  // TODO: Add throwing of error.
-  // Possible errors:
-  //  - http status code
-  //  - decoding error
   
   func sendRequestUsingAsyncAwait<T: Decodable>(api: APIResourceable) async throws -> T? {
     guard let url = api.url else { throw RequestError.incorrectUrl }

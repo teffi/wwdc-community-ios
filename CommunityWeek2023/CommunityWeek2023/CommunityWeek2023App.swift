@@ -12,7 +12,8 @@ struct CommunityWeek2023App: App {
     var body: some Scene {
         WindowGroup {
           NavigationStack {
-            ContentView()
+//            ContentView()
+            ContentAltView()
           }            
         }
     }
