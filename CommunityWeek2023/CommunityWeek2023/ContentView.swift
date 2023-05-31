@@ -89,7 +89,7 @@ struct ContentView_Previews: PreviewProvider {
 
 
 struct APIDataResource: APIResourceable {
-  var path: String = "https://wwdc.community/api/staticdata"
+  var path: String = "https://wwdc.community/api/staticdatas"
   var method: HTTPMethod = .GET
 }
 

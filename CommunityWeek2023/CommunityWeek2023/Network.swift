@@ -9,8 +9,63 @@ import Foundation
 import Combine
 
 struct Network {
-  
+  // Use `Combine` - complete version
   func sendRequestUsingCombine<T: Decodable>(api: APIResourceable, type: T.Type) -> AnyPublisher<T, RequestError> {
+    // Return an instant fail event.
+    guard let url = api.url else {
+      print("error url")
+      return Fail<T, RequestError>(error: RequestError.incorrectUrl).eraseToAnyPublisher()
+    }
+    
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    return URLSession.shared.dataTaskPublisher(for: url)
+      .tryMap { (data: Data, response: URLResponse) in
+        //  Throw for non http url response
+        guard let httpResponse = response as? HTTPURLResponse else {
+          throw RequestError.invalidResponse
+        }
+        
+        //  Throw for non success status code.
+        guard httpResponse.status == .success else {
+          throw RequestError.httpStatus(code: httpResponse.status)
+        }
+        return data
+      }
+      .decode(type: T.self, decoder: decoder)
+      .mapError { error in
+        print("error \(error)")
+        // using .mapError operation, the expected return type is Error type.
+        switch error {
+        case is URLError:
+          return RequestError.failedToSend
+        case is DecodingError:
+          return RequestError.decoding(type: (error as! DecodingError))
+        case is RequestError:
+          return error as! RequestError
+        default:
+          return RequestError.undefined
+        }
+      }
+//      .catch { error in
+//        // If catching, return type must be same with function – a Publisher type.
+//        switch error {
+//        case is URLError:
+//          return Fail<T, RequestError>(error: RequestError.failedToSend)
+//        case is DecodingError:
+//          return Fail<T, RequestError>(error: RequestError.decoding(type: error as! DecodingError))
+//        case is RequestError:
+//          return Fail<T, RequestError>(error:error as! RequestError)
+//        default:
+//          return Fail<T, RequestError>(error: RequestError.undefined)
+//        }
+//        print("error \(error)")
+//      }
+      .eraseToAnyPublisher()
+  }
+  
+  // Use `Combine` - missing returning of error for non-200 http status code
+  func sendRequestUsingCombineWithoutHTTPResponseStatusError<T: Decodable>(api: APIResourceable, type: T.Type) -> AnyPublisher<T, RequestError> {
     // Return an instant fail event.
     guard let url = api.url else {
       print("error url")
@@ -35,19 +90,6 @@ struct Network {
           return RequestError.undefined
         }
       }
-//    TODO: Alternative error mapping
-//      .catch { error in
-//        // If catching, return type must be same with function – a Publisher type.
-//        switch error {
-//        case is URLError:
-//          return Fail<T, RequestError>(error: RequestError.failedToSend)
-//        case is DecodingError:
-//          return Fail<T, RequestError>(error: RequestError.decoding(type: error as! DecodingError))
-//        default:
-//          return Fail<T, RequestError>(error: RequestError.undefined)
-//        }
-//        print("error \(error)")
-//      }
       .eraseToAnyPublisher()
   }
   
@@ -83,7 +125,6 @@ struct Network {
 
 extension HTTPURLResponse {
   var status: HTTPCode {
-//    guard let statusCode = statusCode else { return .undefined }
     return HTTPCode(rawValue: statusCode) ?? .undefined
   }
 }
